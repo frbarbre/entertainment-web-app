@@ -1,4 +1,4 @@
-export type Media = {
+export interface Media {
   title: string;
   thumbnail: {
     trending?: {
@@ -16,4 +16,4 @@ export type Media = {
   rating: string;
   isBookmarked: boolean;
   isTrending: boolean;
-};
+}

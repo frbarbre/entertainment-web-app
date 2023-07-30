@@ -43,9 +43,22 @@ const useBookmarkStore = create(
 
 export default useBookmarkStore;
 
-// const store = (set) => ({
-//   succes: false,
-//   setSucces: (succes) => set(() => ({ succes: succes })),
-// });
+interface ThemeStore {
+  darkMode: boolean;
+  setDarkMode: (darkMode: boolean) => void;
+}
 
-// export const useStore = create(store);
+export const useThemeStore = create<ThemeStore>()((set) => ({
+  darkMode: true,
+  setDarkMode: (darkMode) => set(() => ({ darkMode: darkMode })),
+}));
+
+interface InputStore {
+  reset: boolean;
+  setReset: (reset: boolean) => void;
+}
+
+export const useInputStore = create<InputStore>()((set) => ({
+  reset: false,
+  setReset: (reset) => set(() => ({ reset: reset })),
+}));

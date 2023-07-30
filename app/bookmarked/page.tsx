@@ -2,29 +2,24 @@
 
 import { nanoid } from "nanoid";
 import { useState } from "react";
-import { data } from "@/data";
 import Card from "@/components/Card";
 import Search from "@/components/Search";
 import Heading from "@/components/Heading";
-import { useInputStore } from "./store";
-import { shallow } from "zustand/shallow";
+import useBookmarkStore from "../store";
 
-export default function Home() {
+export default function Movies() {
+  const bookmarks = useBookmarkStore((state) => state.bookmarked);
   const [searchValue, setSearchValue] = useState("");
-  const [searchedArray, setSearchedArray] = useState(data);
+  const [searchedArray, setSearchedArray] = useState(bookmarks);
   const [searchedValue, setSearchedValue] = useState("");
 
-  const recommendArray = data.filter((data) => data.isTrending === false);
-  const trendingArray = data.filter((data) => data.isTrending);
-  const [reset, setReset] = useInputStore(
-    (store) => [store.reset, store.setReset],
-    shallow
-  );
+  const movieArray = bookmarks.filter((data) => data.category === "Movie");
+  const tvArray = bookmarks.filter((data) => data.category === "TV Series");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSearchedArray(
-      data.filter((data) =>
+      movieArray.filter((data) =>
         data.title.toLowerCase().includes(searchValue.toLowerCase())
       )
     );
@@ -35,15 +30,8 @@ export default function Home() {
     setSearchValue(e.target.value);
   }
 
-  if (reset) {
-    setSearchValue("");
-    setSearchedValue("")
-    setSearchedArray(data);
-    setReset(false);
-  }
-
   return (
-    <div className="overflow-x-hidden">
+    <div>
       <Search
         searchValue={searchValue}
         handleChange={handleChange}
@@ -53,22 +41,19 @@ export default function Home() {
 
       {searchedValue === "" ? (
         <>
-          <Heading
-            text={`Trending`}
-            padding="pt-[26px] pb-[24px] md:pt-[34px]"
-          />
-          <div className="flex overflow-x-scroll lg:w-screenModlg pr-[16px] md:pr-[24px] lg:pr-[36px] pb-[24px] w-screenModsm md:w-screenModmd gap-[16px] md:gap-[40px]">
-            {trendingArray.map((trend) => (
-              <Card key={nanoid()} data={trend} isTrending={true} />
+          <Heading text={`Bookmarked Movies`} padding="pt-[26px] pb-[24px] md:pt-[34px]" />
+          <div className="flex flex-wrap gap-[16px] md:gap-[30px] lg:gap-[40px] w-screenModsm md:w-screenModmd lg:w-screenModlg pr-[16px] md:pr-[24px] lg:pr-[36px]">
+            {movieArray.map((movie) => (
+              <Card key={nanoid()} data={movie} />
             ))}
           </div>
           <Heading
-            text={`Recommended for you`}
+            text={`Bookmarked TV Series`}
             padding="pb-[24px] md:pt-[15px] lg:pb-[32px] lg:pt-[16px]"
           />
           <div className="flex flex-wrap gap-[16px] md:gap-[30px] lg:gap-[40px] w-screenModsm md:w-screenModmd lg:w-screenModlg pr-[16px] md:pr-[24px] lg:pr-[36px]">
-            {recommendArray.map((recommend) => (
-              <Card key={nanoid()} data={recommend} />
+            {tvArray.map((tv) => (
+              <Card key={nanoid()} data={tv} />
             ))}
           </div>
         </>
